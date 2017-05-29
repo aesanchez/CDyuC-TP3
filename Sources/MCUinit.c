@@ -6,10 +6,10 @@
 **     OR EXPLICITLY MARKED SECTIONS
 **
 **     Project   : DeviceInitialization
-**     Processor : MC9S08SH8CFK
-**     Version   : Component 01.001, Driver 01.08, CPU db: 3.00.018
+**     Processor : MC9S08SH8CPJ
+**     Version   : Component 01.008, Driver 01.08, CPU db: 3.00.066
 **     Datasheet : MC9S08SH8 Rev. 3 6/2008
-**     Date/Time : 2017-05-23, 05:56, # CodeGen: 1
+**     Date/Time : 2017-05-21, 12:36, # CodeGen: 5
 **     Abstract  :
 **         This module contains device initialization code 
 **         for selected on-chip peripherals.
@@ -25,7 +25,7 @@
 
 /* MODULE MCUinit */
 
-#include <mc9s08sh8.h>                 /* I/O map for MC9S08SH8CFK */
+#include <mc9s08sh8.h>                 /* I/O map for MC9S08SH8CPJ */
 #include "MCUinit.h"
 
 /* Standard ANSI C types */
@@ -51,14 +51,12 @@ typedef unsigned long int uint32_t;
 
 /* User declarations and definitions */
 /*   Code, declarations and definitions here will be preserved during code generation */
-#include "play.h"
-
 /* End of user declarations and definitions */
 
 
 /*
 ** ===================================================================
-**     Method      :  MCU_init (component MC9S08SH8_24)
+**     Method      :  MCU_init (component MC9S08SH8_20)
 **
 **     Description :
 **         Device initialization code for selected peripherals.
@@ -66,7 +64,7 @@ typedef unsigned long int uint32_t;
 */
 void MCU_init(void)
 {
-  /* ### MC9S08SH8_24 "Cpu" init code ... */
+  /* ### MC9S08SH8_20 "Cpu" init code ... */
   /*  PE initialization code after reset */
   /* Common initialization of the write once registers */
   /* SOPT1: COPT=0,STOPE=0,IICPS=0,BKGDPE=1,RSTPE=0 */
@@ -103,6 +101,23 @@ void MCU_init(void)
   PTBDS = 0x00U;                                      
   /* PTCDS: PTCDS3=0,PTCDS2=0,PTCDS1=0,PTCDS0=0 */
   PTCDS = 0x00U;                                      
+  /* ### Init_SCI init code */
+  /* SCIC2: TIE=0,TCIE=0,RIE=0,ILIE=0,TE=0,RE=0,RWU=0,SBK=0 */
+  SCIC2 = 0x00U;                       /* Disable the SCI module */
+  (void)(SCIS1 == 0U);                 /* Dummy read of the SCIS1 register to clear flags */
+  (void)(SCID == 0U);                  /* Dummy read of the SCID register to clear flags */
+  /* SCIS2: LBKDIF=1,RXEDGIF=1,RXINV=0,RWUID=0,BRK13=0,LBKDE=0,RAF=0 */
+  SCIS2 = 0xC0U;                                      
+  /* SCIBDH: LBKDIE=0,RXEDGIE=0,SBR12=0,SBR11=0,SBR10=0,SBR9=0,SBR8=0 */
+  SCIBDH = 0x00U;                                      
+  /* SCIBDL: SBR7=0,SBR6=0,SBR5=1,SBR4=1,SBR3=0,SBR2=1,SBR1=0,SBR0=0 */
+  SCIBDL = 0x34U;                                      
+  /* SCIC1: LOOPS=0,SCISWAI=0,RSRC=0,M=0,WAKE=0,ILT=0,PE=0,PT=0 */
+  SCIC1 = 0x00U;                                      
+  /* SCIC3: R8=0,T8=0,TXDIR=0,TXINV=0,ORIE=0,NEIE=0,FEIE=0,PEIE=0 */
+  SCIC3 = 0x00U;                                      
+  /* SCIC2: TIE=0,TCIE=0,RIE=0,ILIE=0,TE=1,RE=1,RWU=0,SBK=0 */
+  SCIC2 = 0x0CU;                                      
   /* ### */
   /*lint -save  -e950 Disable MISRA rule (1.1) checking. */
   asm CLI;                             /* Enable interrupts */
@@ -112,6 +127,61 @@ void MCU_init(void)
 
 
 /*lint -save  -e765 Disable MISRA rule (8.10) checking. */
+/*
+** ===================================================================
+**     Interrupt handler : isrVscitx
+**
+**     Description :
+**         User interrupt service routine. 
+**     Parameters  : None
+**     Returns     : Nothing
+** ===================================================================
+*/
+__interrupt void isrVscitx(void)
+{
+  /* Write your interrupt code here ... */
+
+}
+/* end of isrVscitx */
+
+
+/*
+** ===================================================================
+**     Interrupt handler : isrVscirx
+**
+**     Description :
+**         User interrupt service routine. 
+**     Parameters  : None
+**     Returns     : Nothing
+** ===================================================================
+*/
+__interrupt void isrVscirx(void)
+{
+  //if(SCIS1_RDRF==1)
+	//rxchar=SCID;  
+
+}
+/* end of isrVscirx */
+
+
+/*
+** ===================================================================
+**     Interrupt handler : isrVscierr
+**
+**     Description :
+**         User interrupt service routine. 
+**     Parameters  : None
+**     Returns     : Nothing
+** ===================================================================
+*/
+__interrupt void isrVscierr(void)
+{
+  /* Write your interrupt code here ... */
+
+}
+/* end of isrVscierr */
+
+
 /*lint -restore Enable MISRA rule (8.10) checking. */
 
 /*lint -save  -e950 Disable MISRA rule (1.1) checking. */
@@ -148,9 +218,9 @@ static void (* near const _vect[])(void) @0xFFC0 = { /* Interrupt vector table *
          UNASSIGNED_ISR,               /* Int.no. 21 Vportb (at FFD4)                Unassigned */
          UNASSIGNED_ISR,               /* Int.no. 20 Vporta (at FFD6)                Unassigned */
          UNASSIGNED_ISR,               /* Int.no. 19 VReserved19 (at FFD8)           Unassigned */
-         UNASSIGNED_ISR,               /* Int.no. 18 Vscitx (at FFDA)                Unassigned */
-         UNASSIGNED_ISR,               /* Int.no. 17 Vscirx (at FFDC)                Unassigned */
-         UNASSIGNED_ISR,               /* Int.no. 16 Vscierr (at FFDE)               Unassigned */
+         isrVscitx,                    /* Int.no. 18 Vscitx (at FFDA)                Used */
+         isrVscirx,                    /* Int.no. 17 Vscirx (at FFDC)                Used */
+         isrVscierr,                   /* Int.no. 16 Vscierr (at FFDE)               Used */
          UNASSIGNED_ISR,               /* Int.no. 15 Vspi (at FFE0)                  Unassigned */
          UNASSIGNED_ISR,               /* Int.no. 14 Vtpm2ovf (at FFE2)              Unassigned */
          UNASSIGNED_ISR,               /* Int.no. 13 Vtpm2ch1 (at FFE4)              Unassigned */
@@ -172,64 +242,6 @@ static void (* near const _vect[])(void) @0xFFC0 = { /* Interrupt vector table *
 
 
 
-
-
-/*
-** ===================================================================
-**     Interrupt handler : isrVtpm1ch0
-**
-**     Description :
-**         User interrupt service routine. 
-**     Parameters  : None
-**     Returns     : Nothing
-** ===================================================================
-*/
-__interrupt void isrVtpm1ch0(void)
-{
-  /* Write your interrupt code here ... */
-	Tpm1CH0_Handler();
-	TPM1C0SC_CH0F = 0;  // clear interrupt flag
-}
-/* end of isrVtpm1ch0 */
-
-
-/*
-** ===================================================================
-**     Interrupt handler : isrVtpm1ch1
-**
-**     Description :
-**         User interrupt service routine. 
-**     Parameters  : None
-**     Returns     : Nothing
-** ===================================================================
-*/
-__interrupt void isrVtpm1ch1(void)
-{
-  /* Write your interrupt code here ... */
-	Tpm1CH1_Handler();
-	TPM1C1SC_CH1F = 0; // clear interrupt flag
-
-}
-/* end of isrVtpm1ch1 */
-
-
-/*lint -save  -e765 Disable MISRA rule (8.10) checking. */
-/*
-** ===================================================================
-**     Interrupt handler : isrVtpm1ovf
-**
-**     Description :
-**         User interrupt service routine. 
-**     Parameters  : None
-**     Returns     : Nothing
-** ===================================================================
-*/
-__interrupt void isrVtpm1ovf(void)
-{
-  /* Write your interrupt code here ... */
-
-}
-/* end of isrVtpm1ovf */
 
 /* END MCUinit */
 

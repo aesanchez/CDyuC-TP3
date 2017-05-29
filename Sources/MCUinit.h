@@ -5,10 +5,10 @@
 **     USER MODIFICATION ARE PRESERVED ONLY INSIDE EXPLICITLY MARKED SECTIONS.
 **
 **     Project   : DeviceInitialization
-**     Processor : MC9S08SH8CFK
-**     Version   : Component 01.001, Driver 01.08, CPU db: 3.00.018
+**     Processor : MC9S08SH8CPJ
+**     Version   : Component 01.008, Driver 01.08, CPU db: 3.00.066
 **     Datasheet : MC9S08SH8 Rev. 3 6/2008
-**     Date/Time : 2017-05-23, 05:56, # CodeGen: 1
+**     Date/Time : 2017-05-21, 11:47, # CodeGen: 1
 **     Abstract  :
 **         This module contains device initialization code 
 **         for selected on-chip peripherals.
@@ -41,7 +41,7 @@ extern void MCU_init(void);
 #endif
 /*
 ** ===================================================================
-**     Method      :  MCU_init (component MC9S08SH8_24)
+**     Method      :  MCU_init (component MC9S08SH8_20)
 **
 **     Description :
 **         Device initialization code for selected peripherals.
@@ -51,6 +51,48 @@ extern void MCU_init(void);
 
 
 /*lint -save  -e765 Disable MISRA rule (8.10) checking. */
+__interrupt void isrVscitx(void);
+/*
+** ===================================================================
+**     Interrupt handler : isrVscitx
+**
+**     Description :
+**         User interrupt service routine. 
+**     Parameters  : None
+**     Returns     : Nothing
+** ===================================================================
+*/
+
+
+
+__interrupt void isrVscirx(void);
+/*
+** ===================================================================
+**     Interrupt handler : isrVscirx
+**
+**     Description :
+**         User interrupt service routine. 
+**     Parameters  : None
+**     Returns     : Nothing
+** ===================================================================
+*/
+
+
+
+__interrupt void isrVscierr(void);
+/*
+** ===================================================================
+**     Interrupt handler : isrVscierr
+**
+**     Description :
+**         User interrupt service routine. 
+**     Parameters  : None
+**     Returns     : Nothing
+** ===================================================================
+*/
+
+
+
 
 
 /*lint -restore Enable MISRA rule (8.10) checking. */
