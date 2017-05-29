@@ -9,7 +9,7 @@
 **     Processor : MC9S08SH8CPJ
 **     Version   : Component 01.008, Driver 01.08, CPU db: 3.00.066
 **     Datasheet : MC9S08SH8 Rev. 3 6/2008
-**     Date/Time : 2017-05-21, 12:36, # CodeGen: 5
+**     Date/Time : 2017-05-29, 12:03, # CodeGen: 4
 **     Abstract  :
 **         This module contains device initialization code 
 **         for selected on-chip peripherals.
@@ -50,6 +50,7 @@ typedef unsigned long int uint32_t;
 #endif
 
 /* User declarations and definitions */
+extern volatile char rxchar;
 /*   Code, declarations and definitions here will be preserved during code generation */
 /* End of user declarations and definitions */
 
@@ -116,8 +117,8 @@ void MCU_init(void)
   SCIC1 = 0x00U;                                      
   /* SCIC3: R8=0,T8=0,TXDIR=0,TXINV=0,ORIE=0,NEIE=0,FEIE=0,PEIE=0 */
   SCIC3 = 0x00U;                                      
-  /* SCIC2: TIE=0,TCIE=0,RIE=0,ILIE=0,TE=1,RE=1,RWU=0,SBK=0 */
-  SCIC2 = 0x0CU;                                      
+  /* SCIC2: TIE=0,TCIE=0,RIE=1,ILIE=0,TE=1,RE=1,RWU=0,SBK=0 */
+  SCIC2 = 0x2CU;                                      
   /* ### */
   /*lint -save  -e950 Disable MISRA rule (1.1) checking. */
   asm CLI;                             /* Enable interrupts */
@@ -157,8 +158,8 @@ __interrupt void isrVscitx(void)
 */
 __interrupt void isrVscirx(void)
 {
-  //if(SCIS1_RDRF==1)
-	//rxchar=SCID;  
+  if(SCIS1_RDRF==1)
+	rxchar=SCID;  
 
 }
 /* end of isrVscirx */
