@@ -4,5 +4,7 @@ Project_Settings/
 rseHostSettingsCache.xml
 .project
 .cproject
+.DeviceInitialization.g_x
+.DeviceInitialization.g_c
 .cwGeneratedFileSetLog 
 .settings/
