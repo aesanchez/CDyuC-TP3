@@ -13,13 +13,13 @@ void bufferrx_receive(void) {
 	buffertx_send_char(SCID);
 	if (SCID == '\r') {
 		buffertx_send_str("\n > ");
-		shell_execute(i);
+		if (i > 0) shell_execute(i);
 		i = 0;
 		return;
 	}
 	bufferrx_buff[i++] = SCID;
 	if (i == LEN) {
 		i = 0;
-		buffertx_send_str("\r\nERROR\r\n > ");
+		buffertx_send_str("\r\nCOMMAND OUT OF BOUND\r\n > ");
 	}
 }
