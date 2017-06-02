@@ -2,9 +2,9 @@
 <PEproject>
   <Header>
     <Name>DeviceInitialization</Name>
-    <SavedBy>Barcala</SavedBy>
-    <ModificationStamp>4</ModificationStamp>
-    <Date>2017-05-29</Date>
+    <SavedBy>barcalaa</SavedBy>
+    <ModificationStamp>6</ModificationStamp>
+    <Date>2017-06-02</Date>
     <IDE>Eclipse IDE</IDE>
     <PEversion>4.48.0.0</PEversion>
   </Header>
@@ -27,7 +27,7 @@
     <UseExistingModules>true</UseExistingModules>
     <RenamePeripheries>false</RenamePeripheries>
     <Autodependency>true</Autodependency>
-    <ProjectCompNumb>5</ProjectCompNumb>
+    <ProjectCompNumb>14</ProjectCompNumb>
     <DelUnusedPreviouslyGenFiles>true</DelUnusedPreviouslyGenFiles>
     <GeneratedCodeFrozen>false</GeneratedCodeFrozen>
     <UserInterface>MCU_INIT</UserInterface>
@@ -2235,7 +2235,7 @@
   <Bean>
     <BeanType>Init_SCI_HCS08</BeanType>
     <Name>SCI</Name>
-    <CompNumb>3</CompNumb>
+    <CompNumb>4</CompNumb>
     <CompEnabled>true</CompEnabled>
     <GenCodeMode>CHECK_n_WRITE</GenCodeMode>
     <IconName>PERIPHINSP</IconName>
@@ -2247,7 +2247,7 @@
         <ItemSymbol>DeviceName</ItemSymbol>
         <ReadOnly>false</ReadOnly>
         <UserReadOnly>false</UserReadOnly>
-        <Value>SCI1</Value>
+        <Value>SCI2</Value>
       </ItemState>
       <ItemState>
         <ItemSymbol>PeriphDevice</ItemSymbol>
@@ -2736,8 +2736,8 @@
         <ItemSymbol>RIE</ItemSymbol>
         <ReadOnly>false</ReadOnly>
         <UserReadOnly>false</UserReadOnly>
-        <Index>1</Index>
-        <Value>false</Value>
+        <Index>0</Index>
+        <Value>true</Value>
       </ItemState>
       <ItemState>
         <ItemSymbol>ReceiveRequestSelectGrp</ItemSymbol>
