@@ -231,7 +231,8 @@ __interrupt void isrVtpm1ovf(void)
 __interrupt void isrVtpm1ch1(void)
 {
   /* Write your interrupt code here ... */
-
+	TPM1C1V+=(int)(8000000.0/(16000.0*2));
+	TPM1C1SC_CH1F = 0;
 }
 /* end of isrVtpm1ch1 */
 

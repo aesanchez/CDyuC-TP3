@@ -2,8 +2,8 @@
   <GeneratedFilesList>
     <GeneratedByDI>
       <File Name="Sources\MCUinit.h" FileDate="2017-06-02, 11:56:24" FileAge="1496415384096" FileType="130" />
-      <File Name="Sources\MCUinit.c" FileDate="2017-06-02, 11:56:24" FileAge="1496415384065" FileType="130" />
+      <File Name="Sources\MCUinit.c" FileDate="2017-06-02, 12:47:49" FileAge="1496418469178" FileType="130" />
     </GeneratedByDI>
   </GeneratedFilesList>
-  <CodeGenReference>7</CodeGenReference>
+  <CodeGenReference>8</CodeGenReference>
 </CodeGenerationInfo>

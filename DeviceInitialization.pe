@@ -3151,6 +3151,7 @@
         <ReadOnly>false</ReadOnly>
         <UserReadOnly>false</UserReadOnly>
         <SharedPrphMode>false</SharedPrphMode>
+        <Value>PTC1_TPM1CH1_ADP9</Value>
       </ItemState>
       <ItemState>
         <ItemSymbol>ChannelPinSignal0</ItemSymbol>
