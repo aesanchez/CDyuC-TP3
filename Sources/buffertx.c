@@ -1,20 +1,20 @@
 #include "derivative.h"
 #define LEN 32
-char buffer[LEN];
+char buffertx_buff[LEN];
 char w, r;
 void buffertx_send_str(char * str) {
 	while (*str != '\0') {
-		buffer[(w++)%LEN]=*str;
+		buffertx_buff[(w++)%LEN]=*str;
 		str++;
 		SCIC2_TIE=1;
 	}
 }
 void buffertx_send_char(char c) {
-	buffer[(w++) % LEN] = c;
+	buffertx_buff[(w++) % LEN] = c;
 	SCIC2_TIE = 1;
 }
 void buffertx_transmit() {
-	SCID = buffer[(r++) % LEN];
+	SCID = buffertx_buff[(r++) % LEN];
 }
 
 char buffertx_ready(void) {

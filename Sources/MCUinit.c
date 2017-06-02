@@ -50,8 +50,8 @@ typedef unsigned long int uint32_t;
 #endif
 
 /* User declarations and definitions */
-extern volatile char rxchar;
 #include "buffertx.h"
+#include "bufferrx.h"
 /*   Code, declarations and definitions here will be preserved during code generation */
 /* End of user declarations and definitions */
 
@@ -155,7 +155,8 @@ __interrupt void isrVscitx(void) {
  */
 __interrupt void isrVscirx(void) {
 	if (SCIS1_RDRF == 1)
-		rxchar = SCID;
+		//rxchar = SCID;
+		bufferrx_receive();
 
 }
 /* end of isrVscirx */
