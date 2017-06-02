@@ -1,6 +1,7 @@
 #include "bufferrx.h"
 #include "buffertx.h"
 #include "derivative.h"
+#include "shell.h"
 
 void bufferrx_send_command(void);
 
@@ -13,10 +14,11 @@ void bufferrx_receive(void) {
 	buffertx_send_char(SCID);
 	if(SCID=='\r') {
 		buffertx_send_str("\n > ");
+		bufferrx_send_command();
 		i=0;
 		return;
 	}
-	
+
 	bufferrx_buff[i++]=SCID;
 	if(i==LEN){
 		i=0;
@@ -25,4 +27,11 @@ void bufferrx_receive(void) {
 }
 
 void bufferrx_send_command(){
+	char bufferrx_command[i];
+	char j;
+	for (j = 0; j < i; ++j) {
+		bufferrx_command[j] = bufferrx_buff[j];
+	}
+
+	shell_execute(bufferrx_command);
 }
