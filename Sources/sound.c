@@ -1,11 +1,10 @@
 #include "sound.h"
 #include "derivative.h"
 
-unsigned int nc;
+//by default frequency=200
+unsigned int nc=(unsigned int)(4000000/MIN);
 
-void sound_on(void) {
-	//by default
-	sound_set_frequency(MIN);
+void sound_on(void) {	
 	//habilitar la interrupcion
 	TPM1C1SC_CH1IE = 1;
 }
@@ -31,9 +30,11 @@ char sound_set_frequency(unsigned int freq) {
 	//fobtenida=Fclk/((nc)*2)
 	return (4000000 / nc) - freq;
 }
-void sound_barrido(void) {
+void sound_seep(void) {
 	//TODO
 }
 void sound_reset(void){
-	//TODO
+	//by default
+	sound_set_frequency(MIN);
+	TPM1C1SC_CH1IE = 0;
 }
