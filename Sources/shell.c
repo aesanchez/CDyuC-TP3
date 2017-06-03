@@ -22,7 +22,7 @@ void shell_execute(char dim) {
 			<= 9) {
 		//es un digito
 		num=num*10;
-		num+=bufferrx_buff[r];
+		num+=bufferrx_buff[r]-'0';
 		r++;
 	}
 	if (r == dim) {
@@ -35,13 +35,13 @@ void shell_execute(char dim) {
 	switch (dim) {
 	case 1:
 		switch (bufferrx_buff[0]) {
-		case 'A':
+		case 'a':
 			shell_A();
 			break;
-		case 'B':
+		case 'b':
 			shell_B();
 			break;
-		case 'C':
+		case 'c':
 			shell_C();
 			break;
 		default:
@@ -49,18 +49,18 @@ void shell_execute(char dim) {
 		}
 		break;
 	case 2:
-		if (bufferrx_buff[0] == 'O' && bufferrx_buff[1] == 'N')
+		if (bufferrx_buff[0] == 'o' && bufferrx_buff[1] == 'n')
 			shell_on();
 		break;
 	case 3:
-		if (bufferrx_buff[0] == 'O' && bufferrx_buff[1] == 'F'
-				&& bufferrx_buff[2] == 'F')
+		if (bufferrx_buff[0] == 'o' && bufferrx_buff[1] == 'f'
+				&& bufferrx_buff[2] == 'f')
 			shell_off();
 		break;
 	case 5:
-		if (bufferrx_buff[0] == 'R' && bufferrx_buff[1] == 'E'
-				&& bufferrx_buff[2] == 'S' && bufferrx_buff[3] == 'E'
-				&& bufferrx_buff[4] == 'T')
+		if (bufferrx_buff[0] == 'r' && bufferrx_buff[1] == 'e'
+				&& bufferrx_buff[2] == 's' && bufferrx_buff[3] == 'e'
+				&& bufferrx_buff[4] == 't')
 			shell_reset();
 		break;
 	default:
@@ -69,33 +69,45 @@ void shell_execute(char dim) {
 }
 
 void shell_A(void) {
-	// PERIODO ==5seg
-	// TPM1C1V=????
+	buffertx_send_str("\r\nBarriendo con T1 = 5s");
+	sound_sweep(5);
 }
 
 void shell_B(void) {
-	// PERIODO ==10seg
-	// TPM1C1V=????
+	buffertx_send_str("\r\nBarriendo con T2 = 10s");
+	sound_sweep(10);
 }
 
 void shell_C(void) {
-	// PERIODO ==15seg
-	// TPM1C1V=????
+	buffertx_send_str("\r\nBarriendo con T3 = 15s");
+	sound_sweep(15);
 }
 
 void shell_on(void) {
-	buffertx_send_str("\r\nPrendiendo...");
+	buffertx_send_str("\r\nPrendiendo sonido...");
 	sound_on();
 }
 
 void shell_off(void) {
-	buffertx_send_str("\r\nApagando...");
+	buffertx_send_str("\r\nApagando sonido...");
 	sound_off();
 }
 
 void shell_reset(void) {
 	buffertx_send_str("\r\nReseteando...");
+	shell_show_commands();
 	sound_reset();
+}
+//TODO ver el nombre
+void shell_show_commands(void){
+	buffertx_send_str("\r\nLista de comandos:");
+	buffertx_send_str("\r\nON   >> prender el sonido");
+	buffertx_send_str("\r\nOFF  >> apagar el sonido");
+	buffertx_send_str("\r\nRESET>> resetear");
+	buffertx_send_str("\r\nA    >> barrido de 5seg");
+	buffertx_send_str("\r\nB    >> barrido de 10seg");
+	buffertx_send_str("\r\nC    >> barrido de 15seg");
+	buffertx_send_str("\r\nFREQ >> frecuencia fija entre 200-10000");
 }
 
 void shell_error(void) {
@@ -105,7 +117,7 @@ void shell_error(void) {
 void shell_num(unsigned int num, char dim) {
 	char error,j;
 	if ((num < MIN) || (num > MAX)) {
-			buffertx_send_str("\r\nSolo rangos entre 200-10000 Hz");
+			buffertx_send_str("\r\nSolo entre 200-10000 Hz");
 		return;
 	}	
 	buffertx_send_str("\r\nSeteando frecuencia ");

@@ -10,9 +10,7 @@ void MCU_init(void); /* Device initialization function declaration */
 
 void main(void) {
 	MCU_init();	
-	//TODO menu de comandos
-	buffertx_send_str("\r\nBIENVENIDOS\r\n > ");
-
+	shell_show_commands();
 	for (;;) {
 	}
 
