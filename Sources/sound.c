@@ -1,12 +1,39 @@
 #include "sound.h"
+#include "derivative.h"
 
-int nc;
+unsigned int nc;
 
-void sound_init(void){
-	// TODO(matipan): deshabilitar la interrupcion, chequear
-	// cuall es la TPM para deshabilitarla
-	TPM1C1V+=nc;
+void sound_on(void) {
+	//by default
+	sound_set_frequency(MIN);
+	//habilitar la interrupcion
+	TPM1C1SC_CH1IE = 1;
+}
+void sound_off(void) {
+	//deshabilitar la interrupcion para que no suene
+	TPM1C1SC_CH1IE = 0;
+
+}
+void sound_handle_interrupt(void) {
+	TPM1C1V += nc;
+	TPM1C1SC_CH1F = 0;
 }
 
-void sound_frequency(int freq){
+//devuelve el error de representacion
+char sound_set_frequency(unsigned int freq) {
+	//Fclk=8MHz
+	//Ciclo de trabajo 50%
+	//f=frequencia deseada
+	//nc= Fclk/(f*2)
+	nc = (unsigned int) (4000000 / freq);
+	//devolver error
+	//f deseada - f obtenida
+	//fobtenida=Fclk/((nc)*2)
+	return (4000000 / nc) - freq;
+}
+void sound_barrido(void) {
+	//TODO
+}
+void sound_reset(void){
+	//TODO
 }
