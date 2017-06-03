@@ -27,6 +27,5 @@ char buffertx_ready(void) {
 	} else {
 		return 1;
 	}
-
 }
 
