@@ -52,6 +52,7 @@ typedef unsigned long int uint32_t;
 /* User declarations and definitions */
 #include "buffertx.h"
 #include "bufferrx.h"
+#include "sound.h"
 /*   Code, declarations and definitions here will be preserved during code generation */
 /* End of user declarations and definitions */
 
@@ -231,8 +232,7 @@ __interrupt void isrVtpm1ovf(void)
 __interrupt void isrVtpm1ch1(void)
 {
   /* Write your interrupt code here ... */
-	TPM1C1V+=(int)(8000000.0/(16000.0*2));
-	TPM1C1SC_CH1F = 0;
+	sound_handle_interrupt();
 }
 /* end of isrVtpm1ch1 */
 
