@@ -3,9 +3,9 @@
 
 #define MIN 200
 #define MAX 10000
-#define STEP 100//solo se usa para los barridos
 
-void sound_handle_interrupt(void);
+void sound_interrupt(void);
+void sound_sweep_interrupt(void);
 char sound_set_frequency(unsigned int);
 void sound_on(void);
 void sound_off(void);

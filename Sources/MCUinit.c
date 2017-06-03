@@ -9,7 +9,7 @@
 **     Processor : MC9S08SH8CPJ
 **     Version   : Component 01.008, Driver 01.08, CPU db: 3.00.066
 **     Datasheet : MC9S08SH8 Rev. 3 6/2008
-**     Date/Time : 2017-06-03, 10:09, # CodeGen: 4
+**     Date/Time : 2017-06-03, 12:47, # CodeGen: 9
 **     Abstract  :
 **         This module contains device initialization code 
 **         for selected on-chip peripherals.
@@ -136,6 +136,11 @@ void MCU_init(void)
   (void)(TPM1SC == 0U);                /* Overflow int. flag clearing (first part) */
   /* TPM1SC: TOF=0,TOIE=0,CPWMS=0,CLKSB=0,CLKSA=1,PS2=0,PS1=0,PS0=0 */
   TPM1SC = 0x08U;                      /* Int. flag clearing (2nd part) and timer control register setting */
+  /* ### Init_RTC init code */
+  /* RTCMOD: RTCMOD=0 */
+  RTCMOD = 0x00U;                      /* Set modulo register */
+  /* RTCSC: RTIF=1,RTCLKS=0,RTIE=0,RTCPS=8 */
+  RTCSC = 0x88U;                       /* Configure RTC */
   /* ### */
   /*lint -save  -e950 Disable MISRA rule (1.1) checking. */
   asm CLI;                             /* Enable interrupts */
@@ -145,6 +150,24 @@ void MCU_init(void)
 
 
 /*lint -save  -e765 Disable MISRA rule (8.10) checking. */
+/*
+** ===================================================================
+**     Interrupt handler : isrVrtc
+**
+**     Description :
+**         User interrupt service routine. 
+**     Parameters  : None
+**     Returns     : Nothing
+** ===================================================================
+*/
+__interrupt void isrVrtc(void)
+{
+  /* Write your interrupt code here ... */
+	sound_sweep_interrupt();
+}
+/* end of isrVrtc */
+
+
 /*
 ** ===================================================================
 **     Interrupt handler : isrVscitx
@@ -232,7 +255,7 @@ __interrupt void isrVtpm1ovf(void)
 __interrupt void isrVtpm1ch1(void)
 {
   /* Write your interrupt code here ... */
-	sound_handle_interrupt();
+	sound_interrupt();
 }
 /* end of isrVtpm1ch1 */
 
@@ -266,7 +289,7 @@ static void (* near const _vect[])(void) @0xFFC0 = { /* Interrupt vector table *
          UNASSIGNED_ISR,               /* Int.no. 28 VReserved28 (at FFC6)           Unassigned */
          UNASSIGNED_ISR,               /* Int.no. 27 VReserved27 (at FFC8)           Unassigned */
          UNASSIGNED_ISR,               /* Int.no. 26 Vmtim (at FFCA)                 Unassigned */
-         UNASSIGNED_ISR,               /* Int.no. 25 Vrtc (at FFCC)                  Unassigned */
+         isrVrtc,                      /* Int.no. 25 Vrtc (at FFCC)                  Used */
          UNASSIGNED_ISR,               /* Int.no. 24 Viic (at FFCE)                  Unassigned */
          UNASSIGNED_ISR,               /* Int.no. 23 Vadc (at FFD0)                  Unassigned */
          UNASSIGNED_ISR,               /* Int.no. 22 VReserved22 (at FFD2)           Unassigned */
