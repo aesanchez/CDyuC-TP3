@@ -1,7 +1,6 @@
 #include <hidef.h> /* for EnableInterrupts macro */
 #include "derivative.h" /* include peripheral declarations */
-#include "buffertx.h"
-#include "sound.h"
+#include "shell.h"
 
 #ifdef __cplusplus
 extern "C"

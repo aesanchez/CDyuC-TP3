@@ -8,6 +8,9 @@ char bufferrx_buff[LEN];
 //el buffer se comparte con shell para poder leer los comandos
 char i = 0;
 //TODO blocked state
+
+void push_filtered(char); 
+
 void bufferrx_receive(void) {
 	// en SCID esta el caracter a leer
 	buffertx_send_char(SCID);

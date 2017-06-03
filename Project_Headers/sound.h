@@ -10,5 +10,6 @@ char sound_set_frequency(unsigned int);
 void sound_on(void);
 void sound_off(void);
 void sound_reset(void);
+void sound_sweep(char);
 
 #endif
