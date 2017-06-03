@@ -1,5 +1,7 @@
 #include "shell.h"
 #include "bufferrx.h"
+#include "sound.h"
+#include "buffertx.h"
 
 void shell_A(void);
 void shell_B(void);
@@ -8,31 +10,28 @@ void shell_on(void);
 void shell_off(void);
 void shell_reset(void);
 void shell_error(void);
-void shell_num(void);
-
-// TODO(check que onda): aca habria que llamar a sound_enable o algo asi
-// para que se habilite la interrucion del toggle de la salida?? Osea del
-// C1??
+void shell_num(unsigned int, char);
 
 // TODO(agus): refactor para usar matriz en la comparacion
 // 	       de comandos
 
 void shell_execute(char dim) {
-	char r=0;
-	char num=0;
-	while(r<dim && bufferrx_buff[r]-'0'>=0 && bufferrx_buff[r]-'0'<=9){
+	char r = 0;
+	unsigned int num = 0;
+	while (r < dim && bufferrx_buff[r] - '0' >= 0 && bufferrx_buff[r] - '0'
+			<= 9) {
 		//es un digito
 		num=num*10;
 		num+=bufferrx_buff[r];
-		r++;		
+		r++;
 	}
-	if(r==dim){
+	if (r == dim) {
 		//todos digitos
-		shell_num(num);
+		shell_num(num, dim);
 		return;
-	}	
+	}
 	//si no correspondia a un numero sigue
-	
+
 	switch (dim) {
 	case 1:
 		switch (bufferrx_buff[0]) {
@@ -69,7 +68,6 @@ void shell_execute(char dim) {
 	}
 }
 
-// TODO: en estos casos, habria que setear el timer TPMC1V no?
 void shell_A(void) {
 	// PERIODO ==5seg
 	// TPM1C1V=????
@@ -86,21 +84,44 @@ void shell_C(void) {
 }
 
 void shell_on(void) {
-
+	buffertx_send_str("\r\nPrendiendo...");
+	sound_on();
 }
 
 void shell_off(void) {
-
+	buffertx_send_str("\r\nApagando...");
+	sound_off();
 }
 
 void shell_reset(void) {
-
+	buffertx_send_str("\r\nReseteando...");
+	sound_reset();
 }
 
 void shell_error(void) {
-
+	buffertx_send_str("\r\nComando no reconocido");
 }
 
-void shell_num(void) {
+void shell_num(unsigned int num, char dim) {
+	char error,j;
+	if ((num < MIN) || (num > MAX)) {
+			buffertx_send_str("\r\nSolo rangos entre 200-10000 Hz");
+		return;
+	}	
+	buffertx_send_str("\r\nSeteando frecuencia ");
+	//imprimo frecuencia ingresada
 
+	for (j = 0; j < dim; j++)
+		buffertx_send_char(bufferrx_buff[j]);
+	error = sound_set_frequency(num);
+	//imprimo el error
+	buffertx_send_str("\r\nCon error de ");
+	//convertir a string
+	if (error < 0) {
+		buffertx_send_char('-');
+		error *= -1;
+	}
+	//TODO imprimir valor abosuluto de error	
+	buffertx_send_str("Hz");
 }
+
