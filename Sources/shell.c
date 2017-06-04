@@ -18,7 +18,7 @@ void shell_num(unsigned int, char);
 void shell_execute(char dim) {
 	char r = 0;
 	unsigned int num = 0;
-	if ((bufferrx_buff[r] == 'f') || (bufferrx_buff[r] == 'F') ) {
+	if ((bufferrx_buff[r] == 'f') ) {
 		
 		r+=2;
 	
@@ -39,19 +39,24 @@ void shell_execute(char dim) {
 
 	switch (dim) {
 	case 7:
-		shell_A();
+		if (bufferrx_buff[0] == 's' && bufferrx_buff[1] == 'w'
+						&& bufferrx_buff[2] == 'e' && bufferrx_buff[3] == 'e'
+						&& bufferrx_buff[4] == 'p' && bufferrx_buff[5] == ' '
+						&& bufferrx_buff[6] == '5' )
+			shell_A();
 		break;
 	case 8:
-		switch (bufferrx_buff[7]) {
-				case '0':
-					shell_B();
-					break;
-				case '5':
-					shell_C();
-					break;
-				default:
-					shell_error();
-				}
+		if (bufferrx_buff[0] == 's' && bufferrx_buff[1] == 'w'
+								&& bufferrx_buff[2] == 'e' && bufferrx_buff[3] == 'e'
+								&& bufferrx_buff[4] == 'p' && bufferrx_buff[5] == ' '
+								&& bufferrx_buff[6] == '1' && bufferrx_buff[7] == '0')
+			shell_B();
+		break;
+		if (bufferrx_buff[0] == 's' && bufferrx_buff[1] == 'w'
+								&& bufferrx_buff[2] == 'e' && bufferrx_buff[3] == 'e'
+								&& bufferrx_buff[4] == 'p' && bufferrx_buff[5] == ' '
+								&& bufferrx_buff[6] == '1' && bufferrx_buff[7] == '5')			
+			shell_C();
 		break;
 	case 2:
 		if (bufferrx_buff[0] == 'o' && bufferrx_buff[1] == 'n')
