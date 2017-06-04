@@ -125,15 +125,15 @@ void shell_error(void) {
 }
 
 void shell_num(unsigned int num, char dim) {
-	char error,j;
+	char error,j, i;
+	char aux[3];
 	if ((num < MIN) || (num > MAX)) {
 			buffertx_send_str("\r\nSolo entre 200-10000 Hz");
 		return;
-	}	
+	}
 	buffertx_send_str("\r\nSeteando frecuencia ");
 	//imprimo frecuencia ingresada
-
-	for (j = 0; j < dim; j++)
+	for (j = 2; j < dim; j++)
 		buffertx_send_char(bufferrx_buff[j]);
 	error = sound_set_frequency(num);
 	//imprimo el error
@@ -143,7 +143,17 @@ void shell_num(unsigned int num, char dim) {
 		buffertx_send_char('-');
 		error *= -1;
 	}
-	//TODO imprimir valor abosuluto de error	
+	if(error == 0) buffertx_send_char('0');
+	else {
+		j=0;
+		while(error != 0){
+			aux[j++] = error % 10;
+			error /= 10;
+		}
+
+		for (i = j-1; i >=0 ; i++)
+			buffertx_send_char(aux[i]+'0');
+	}
 	buffertx_send_str("Hz");
 }
 
