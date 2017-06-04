@@ -18,35 +18,40 @@ void shell_num(unsigned int, char);
 void shell_execute(char dim) {
 	char r = 0;
 	unsigned int num = 0;
-	while (r < dim && bufferrx_buff[r] - '0' >= 0 && bufferrx_buff[r] - '0'
-			<= 9) {
-		//es un digito
-		num=num*10;
-		num+=bufferrx_buff[r]-'0';
-		r++;
+	if ((bufferrx_buff[r] == 'f') || (bufferrx_buff[r] == 'F') ) {
+		
+		r+=2;
+	
+		while (r < dim && bufferrx_buff[r] - '0' >= 0 && bufferrx_buff[r] - '0'
+				<= 9) {
+			//es un digito
+			num=num*10;
+			num+=bufferrx_buff[r]-'0';
+			r++;
+		}
 	}
 	if (r == dim) {
 		//todos digitos
 		shell_num(num, dim);
 		return;
 	}
-	//si no correspondia a un numero sigue
+	//si no corresponde a la instruccion de setear frecuencia sigue
 
 	switch (dim) {
-	case 1:
-		switch (bufferrx_buff[0]) {
-		case 'a':
-			shell_A();
-			break;
-		case 'b':
-			shell_B();
-			break;
-		case 'c':
-			shell_C();
-			break;
-		default:
-			shell_error();
-		}
+	case 7:
+		shell_A();
+		break;
+	case 8:
+		switch (bufferrx_buff[7]) {
+				case '0':
+					shell_B();
+					break;
+				case '5':
+					shell_C();
+					break;
+				default:
+					shell_error();
+				}
 		break;
 	case 2:
 		if (bufferrx_buff[0] == 'o' && bufferrx_buff[1] == 'n')
@@ -104,10 +109,10 @@ void shell_show_commands(void){
 	buffertx_send_str("\r\nON   >> prender el sonido");
 	buffertx_send_str("\r\nOFF  >> apagar el sonido");
 	buffertx_send_str("\r\nRESET>> resetear");
-	buffertx_send_str("\r\nA    >> barrido de 5seg");
-	buffertx_send_str("\r\nB    >> barrido de 10seg");
-	buffertx_send_str("\r\nC    >> barrido de 15seg");
-	buffertx_send_str("\r\nFREQ >> frecuencia fija entre 200-10000");
+	buffertx_send_str("\r\nSWEEP 5    >> barrido de 5seg");
+	buffertx_send_str("\r\nSWEEP 10    >> barrido de 10seg");
+	buffertx_send_str("\r\nSWEEP 15   >> barrido de 15seg");
+	buffertx_send_str("\r\nF=FREQ >> frecuencia fija entre 200-10000");
 }
 
 void shell_error(void) {
