@@ -11,7 +11,7 @@ char i = 0;
 // un comando
 char blocked=0;
 
-void push_filtered(char);
+void push_upper_to_lower_case(char);
 
 void bufferrx_receive(void) {
 	char aux;
@@ -29,30 +29,17 @@ void bufferrx_receive(void) {
 		i = 0;
 		return;
 	}
-	push_filtered(aux);
+	push_upper_to_lower_case(aux);
 	if (i == LEN) {
 		i = 0;
 		buffertx_send_str("\r\nCOMANDO FUERA DE RANGO\r\n > ");
 	}
 }
-void push_filtered(char c) {
-	if (c >= '0' && c <= '9') {
-		//es un digito >> no hacer nada
-		bufferrx_buff[i++] = c;
-		return;
-	}
+void push_upper_to_lower_case(char c) {
 	if (c >= 'A' && c <= 'Z') {
 		//upper caso to lower case
-		bufferrx_buff[i++] = c + ('a' - 'A');
-		return;
+		c = c + ('a' - 'A');		
 	}
-	if (c >= 'a' && c <= 'z') {
-		//lower case >> no hacer nada
-		bufferrx_buff[i++] = c;
-		return;
-	}
-	if(c==' ')
-		bufferrx_buff[i++] = c;
-	//en este punto ya no son caracteres validos
-	//por lo que no se lo pushea en el buffer
+	bufferrx_buff[i++] = c;
+
 }
