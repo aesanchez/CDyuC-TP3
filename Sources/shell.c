@@ -14,6 +14,7 @@ void shell_num(unsigned int, char);
 
 const char NUMBER_OF_COMMANDS=6;
 const char *COMMANDS[]={"on","off","reset","sweep 5","sweep 10","sweep 15"};
+const char COMMANDS_LEN[]={2,3,5,7,8,8};
 void (*COMMANDS_FUNC[])(void) = { shell_on, shell_off, shell_reset, shell_sweep_5, shell_sweep_10, shell_sweep_15};
 
 //returns 1 if str=command on buff
@@ -44,9 +45,11 @@ void shell_execute(char command_length) {
 			shell_num(num, command_length);
 			return;
 		}
+		shell_error();
 	}	
 	//si no corresponde a la instruccion de setear frecuencia sigue
 	for(r=0;r<NUMBER_OF_COMMANDS;r++){
+		if(COMMANDS_LEN[r]!=command_length) continue;
 		if(shell_compare(COMMANDS[r],command_length)){
 			(*COMMANDS_FUNC[r])();
 			return;
