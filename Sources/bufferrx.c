@@ -30,6 +30,7 @@ void bufferrx_receive_handler(void) {
 		}
 		buffertx_send_str("\r\n > ");
 		i = 0;
+		FLAG_RECIEVED=0;
 		return;
 	}
 	push_upper_to_lower_case(car);
@@ -37,6 +38,7 @@ void bufferrx_receive_handler(void) {
 		i = 0;
 		buffertx_send_str("\r\nCOMANDO FUERA DE RANGO\r\n > ");
 	}
+	FLAG_RECIEVED=0;
 }
 void push_upper_to_lower_case(char c) {
 	if (c >= 'A' && c <= 'Z') {

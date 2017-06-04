@@ -17,7 +17,8 @@ void main(void) {
 	
 	for (;;) {
 		if(FLAG_RECIEVED)
-			bufferrx_recieve_handler();
+			bufferrx_receive_handler();
+		
 	}
 
 }
