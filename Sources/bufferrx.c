@@ -7,17 +7,24 @@
 char bufferrx_buff[LEN];
 //el buffer se comparte con shell para poder leer los comandos
 char i = 0;
-//TODO blocked state
+// para asegurarnos que no se lean caracteres cuando estamos procesando
+// un comando
+char blocked=0;
 
-void push_filtered(char); 
+void push_filtered(char);
 
 void bufferrx_receive(void) {
 	// en SCID esta el caracter a leer
+	if(blocked==1) return;
+
 	buffertx_send_char(SCID);
 	if (SCID == '\r') {
-		buffertx_send_str("\n > ");
-		if (i > 0)
+		if (i > 0){
+			blocked=1;
 			shell_execute(i);
+			blocked=0;
+		}
+		buffertx_send_str("\n > ");
 		i = 0;
 		return;
 	}
