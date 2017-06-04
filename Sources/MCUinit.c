@@ -181,7 +181,7 @@ __interrupt void isrVrtc(void)
 __interrupt void isrVscitx(void)
 {
   /* Write your interrupt code here ... */
-	if(buffertx_ready())
+	if(SCIS1_TDRE == 1)
 		buffertx_transmit();
 }
 /* end of isrVscitx */
@@ -201,7 +201,7 @@ __interrupt void isrVscirx(void)
 {
   /* Write your interrupt code here ... */
 	if(SCIS1_RDRF == 1)
-		bufferrx_receive();
+		bufferrx_receive_interrupt();
 }
 /* end of isrVscirx */
 

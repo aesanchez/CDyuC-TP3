@@ -13,19 +13,19 @@ void shell_error(void);
 void shell_num(unsigned int, char);
 
 void shell_execute(char dim) {
-	char r=0;
+	char iaux=0;
 	unsigned int num = 0;
 	if ((bufferrx_buff[0] == 'f') && (bufferrx_buff[1]==' ')) {
-		r = 2;
-		while (r < dim && bufferrx_buff[r] - '0' >= 0 && bufferrx_buff[r] - '0'
+		iaux = 2;
+		while (iaux < dim && bufferrx_buff[iaux] - '0' >= 0 && bufferrx_buff[iaux] - '0'
 				<= 9) {
 			//es un digito
 			num=num*10;
-			num+=bufferrx_buff[r]-'0';
-			r++;
+			num+=bufferrx_buff[iaux]-'0';
+			iaux++;
 		}
 	}
-	if (r == dim) {
+	if (iaux == dim) {
 		//todos digitos
 		shell_num(num, dim);
 		return;
@@ -109,13 +109,14 @@ void shell_off(void) {
 }
 
 void shell_reset(void) {
-	buffertx_send_str("\r\nReseteando...");
+	//buffertx_send_str("\r\nReseteando...");
 	shell_show_commands();
 	sound_reset();
 }
 
 void shell_show_commands(void){
 	buffertx_send_str("\r\nLista de comandos:");
+	
 	buffertx_send_str("\r\n------------------");
 	buffertx_send_str("\r\nON       >> prender el sonido");
 	buffertx_send_str("\r\nOFF      >> apagar el sonido");
