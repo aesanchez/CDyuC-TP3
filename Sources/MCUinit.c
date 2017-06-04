@@ -9,7 +9,7 @@
 **     Processor : MC9S08SH8CPJ
 **     Version   : Component 01.008, Driver 01.08, CPU db: 3.00.066
 **     Datasheet : MC9S08SH8 Rev. 3 6/2008
-**     Date/Time : 2017-06-05, 05:32, # CodeGen: 5
+**     Date/Time : 2017-06-04, 11:17, # CodeGen: 3
 **     Abstract  :
 **         This module contains device initialization code 
 **         for selected on-chip peripherals.
@@ -128,8 +128,8 @@ void MCU_init(void)
   SCIC1 = 0x00U;                                      
   /* SCIC3: R8=0,T8=0,TXDIR=0,TXINV=0,ORIE=0,NEIE=0,FEIE=0,PEIE=0 */
   SCIC3 = 0x00U;                                      
-  /* SCIC2: TIE=1,TCIE=0,RIE=1,ILIE=0,TE=1,RE=1,RWU=0,SBK=0 */
-  SCIC2 = 0xACU;                                      
+  /* SCIC2: TIE=0,TCIE=0,RIE=1,ILIE=0,TE=1,RE=1,RWU=0,SBK=0 */
+  SCIC2 = 0x2CU;                                      
   /* ### Init_TPM init code */
   (void)(TPM1C1SC == 0U);              /* Channel 0 int. flag clearing (first part) */
   /* TPM1C1SC: CH1F=0,CH1IE=0,MS1B=0,MS1A=1,ELS1B=0,ELS1A=1 */
