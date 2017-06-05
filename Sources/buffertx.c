@@ -1,7 +1,7 @@
 #include "derivative.h"
 #define LEN 32
 char buffertx_buff[LEN];
-char w, r;
+unsigned char w, r;
 void buffertx_send_str(char * str) {
 	while (*str != '\0') {
 		buffertx_buff[(w++)%LEN]=*str;

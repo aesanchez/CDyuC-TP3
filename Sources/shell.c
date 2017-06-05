@@ -12,41 +12,46 @@ void shell_reset(void);
 void shell_error(void);
 void shell_num(unsigned int, char);
 
-// TODO(agus): refactor para usar matriz en la comparacion
-// 	       de comandos
-
 void shell_execute(char dim) {
-	char r = 0;
+	char r;
 	unsigned int num = 0;
-	while (r < dim && bufferrx_buff[r] - '0' >= 0 && bufferrx_buff[r] - '0'
-			<= 9) {
-		//es un digito
-		num=num*10;
-		num+=bufferrx_buff[r]-'0';
-		r++;
+	if ((bufferrx_buff[0] == 'f') && (bufferrx_buff[1]==' ')) {
+		r=2;
+		while (r < dim && bufferrx_buff[r] - '0' >= 0 && bufferrx_buff[r] - '0'
+				<= 9) {
+			//es un digito
+			num=num*10;
+			num+=bufferrx_buff[r]-'0';
+			r++;
+		}
 	}
 	if (r == dim) {
 		//todos digitos
 		shell_num(num, dim);
 		return;
 	}
-	//si no correspondia a un numero sigue
+	//si no corresponde a la instruccion de setear frecuencia sigue
 
 	switch (dim) {
-	case 1:
-		switch (bufferrx_buff[0]) {
-		case 'a':
+	case 7:
+		if (bufferrx_buff[0] == 's' && bufferrx_buff[1] == 'w'
+						&& bufferrx_buff[2] == 'e' && bufferrx_buff[3] == 'e'
+						&& bufferrx_buff[4] == 'p' && bufferrx_buff[5] == ' '
+						&& bufferrx_buff[6] == '5' )
 			shell_A();
-			break;
-		case 'b':
+		break;
+	case 8:
+		if (bufferrx_buff[0] == 's' && bufferrx_buff[1] == 'w'
+								&& bufferrx_buff[2] == 'e' && bufferrx_buff[3] == 'e'
+								&& bufferrx_buff[4] == 'p' && bufferrx_buff[5] == ' '
+								&& bufferrx_buff[6] == '1' && bufferrx_buff[7] == '0')
 			shell_B();
-			break;
-		case 'c':
+		break;
+		if (bufferrx_buff[0] == 's' && bufferrx_buff[1] == 'w'
+								&& bufferrx_buff[2] == 'e' && bufferrx_buff[3] == 'e'
+								&& bufferrx_buff[4] == 'p' && bufferrx_buff[5] == ' '
+								&& bufferrx_buff[6] == '1' && bufferrx_buff[7] == '5')
 			shell_C();
-			break;
-		default:
-			shell_error();
-		}
 		break;
 	case 2:
 		if (bufferrx_buff[0] == 'o' && bufferrx_buff[1] == 'n')
@@ -98,16 +103,18 @@ void shell_reset(void) {
 	shell_show_commands();
 	sound_reset();
 }
-//TODO ver el nombre
+
 void shell_show_commands(void){
 	buffertx_send_str("\r\nLista de comandos:");
-	buffertx_send_str("\r\nON   >> prender el sonido");
-	buffertx_send_str("\r\nOFF  >> apagar el sonido");
-	buffertx_send_str("\r\nRESET>> resetear");
-	buffertx_send_str("\r\nA    >> barrido de 5seg");
-	buffertx_send_str("\r\nB    >> barrido de 10seg");
-	buffertx_send_str("\r\nC    >> barrido de 15seg");
-	buffertx_send_str("\r\nFREQ >> frecuencia fija entre 200-10000");
+	buffertx_send_str("\r\n------------------");
+	buffertx_send_str("\r\nON	>> prender el sonido");
+	buffertx_send_str("\r\nOFF	>> apagar el sonido");
+	buffertx_send_str("\r\nRESET	>> resetear");
+	buffertx_send_str("\r\nSWEEP 5	>> barrido de 5seg");
+	buffertx_send_str("\r\nSWEEP 10	>> barrido de 10seg");
+	buffertx_send_str("\r\nSWEEP 15	>> barrido de 15seg");
+	buffertx_send_str("\r\nF FREQ	>>");
+	buffertx_send_str("frecuencia fija entre 200-10000");
 }
 
 void shell_error(void) {
@@ -115,15 +122,15 @@ void shell_error(void) {
 }
 
 void shell_num(unsigned int num, char dim) {
-	char error,j;
+	char error,j, i;
+	char aux[3];
 	if ((num < MIN) || (num > MAX)) {
 			buffertx_send_str("\r\nSolo entre 200-10000 Hz");
 		return;
-	}	
+	}
 	buffertx_send_str("\r\nSeteando frecuencia ");
 	//imprimo frecuencia ingresada
-
-	for (j = 0; j < dim; j++)
+	for (j = 2; j < dim; j++)
 		buffertx_send_char(bufferrx_buff[j]);
 	error = sound_set_frequency(num);
 	//imprimo el error
@@ -133,7 +140,17 @@ void shell_num(unsigned int num, char dim) {
 		buffertx_send_char('-');
 		error *= -1;
 	}
-	//TODO imprimir valor abosuluto de error	
+	if(error == 0) buffertx_send_char('0');
+	else {
+		j=0;
+		while(error != 0){
+			aux[j++] = error % 10;
+			error /= 10;
+		}
+
+		for (i = j-1; i >=0 ; i++)
+			buffertx_send_char(aux[i]+'0');
+	}
 	buffertx_send_str("Hz");
 }
 
