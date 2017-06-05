@@ -13,10 +13,10 @@ void shell_error(void);
 void shell_num(unsigned int, char);
 
 void shell_execute(char dim) {
-	char r;
+	char r=0;
 	unsigned int num = 0;
 	if ((bufferrx_buff[0] == 'f') && (bufferrx_buff[1]==' ')) {
-		r=2;
+		r = 2;
 		while (r < dim && bufferrx_buff[r] - '0' >= 0 && bufferrx_buff[r] - '0'
 				<= 9) {
 			//es un digito
@@ -37,39 +37,50 @@ void shell_execute(char dim) {
 		if (bufferrx_buff[0] == 's' && bufferrx_buff[1] == 'w'
 						&& bufferrx_buff[2] == 'e' && bufferrx_buff[3] == 'e'
 						&& bufferrx_buff[4] == 'p' && bufferrx_buff[5] == ' '
-						&& bufferrx_buff[6] == '5' )
+						&& bufferrx_buff[6] == '5' ){
 			shell_A();
+			return;
+		}
 		break;
 	case 8:
 		if (bufferrx_buff[0] == 's' && bufferrx_buff[1] == 'w'
 								&& bufferrx_buff[2] == 'e' && bufferrx_buff[3] == 'e'
 								&& bufferrx_buff[4] == 'p' && bufferrx_buff[5] == ' '
-								&& bufferrx_buff[6] == '1' && bufferrx_buff[7] == '0')
+								&& bufferrx_buff[6] == '1' && bufferrx_buff[7] == '0'){
 			shell_B();
+			return;
+		}
 		else if (bufferrx_buff[0] == 's' && bufferrx_buff[1] == 'w'
 								&& bufferrx_buff[2] == 'e' && bufferrx_buff[3] == 'e'
 								&& bufferrx_buff[4] == 'p' && bufferrx_buff[5] == ' '
-								&& bufferrx_buff[6] == '1' && bufferrx_buff[7] == '5')
+								&& bufferrx_buff[6] == '1' && bufferrx_buff[7] == '5'){
 			shell_C();
+			return;
+		}
 		break;
 	case 2:
-		if (bufferrx_buff[0] == 'o' && bufferrx_buff[1] == 'n')
+		if (bufferrx_buff[0] == 'o' && bufferrx_buff[1] == 'n') {
 			shell_on();
+			return;
+		}
 		break;
 	case 3:
 		if (bufferrx_buff[0] == 'o' && bufferrx_buff[1] == 'f'
-				&& bufferrx_buff[2] == 'f')
+				&& bufferrx_buff[2] == 'f') {
 			shell_off();
+			return;
+		}
 		break;
 	case 5:
 		if (bufferrx_buff[0] == 'r' && bufferrx_buff[1] == 'e'
 				&& bufferrx_buff[2] == 's' && bufferrx_buff[3] == 'e'
-				&& bufferrx_buff[4] == 't')
+				&& bufferrx_buff[4] == 't') {
 			shell_reset();
+			return;
+		}
 		break;
-	default:
-		shell_error();
 	}
+	shell_error();
 }
 
 void shell_A(void) {
@@ -122,10 +133,10 @@ void shell_error(void) {
 }
 
 void shell_num(unsigned int num, char dim) {
-	char error,j, i;
+	char error, j, i;
 	char aux[3];
 	if ((num < MIN) || (num > MAX)) {
-			buffertx_send_str("\r\nSolo entre 200-10000 Hz");
+		buffertx_send_str("\r\nSolo entre 200-10000 Hz");
 		return;
 	}
 	buffertx_send_str("\r\nSeteando frecuencia ");
@@ -148,8 +159,8 @@ void shell_num(unsigned int num, char dim) {
 			error /= 10;
 		}
 
-		for (i = j-1; i >=0 ; i--)
-			buffertx_send_char(aux[i]+'0');
+		for (i = j; i >0 ; i--)
+			buffertx_send_char(aux[i-1]+'0');
 	}
 	buffertx_send_str("Hz");
 }

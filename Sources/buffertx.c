@@ -2,8 +2,9 @@
 #define LEN 32
 char buffertx_buff[LEN];
 unsigned char w, r;
+char emptu=0;
 void buffertx_send_str(char * str) {
-	while(SCIC2_TIE==1);
+	while(empty==0);
 	while (*str != '\0') {
 		buffertx_buff[(w++)%LEN]=*str;
 		str++;
@@ -23,6 +24,7 @@ char buffertx_ready(void) {
 		return 0;
 	//TODO peor de los casos que se vaya de la representacion
 	if (r == w) {//buffer empty
+		empty=1;
 		SCIC2_TIE = 0;
 		return 0;
 	} else {

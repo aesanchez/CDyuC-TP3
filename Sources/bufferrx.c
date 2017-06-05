@@ -14,11 +14,12 @@ char blocked=0;
 void push_filtered(char);
 
 void bufferrx_receive(void) {
+	char aux;
 	// en SCID esta el caracter a leer
 	if(blocked==1) return;
-
-	buffertx_send_char(SCID);
-	if (SCID == '\r') {
+	aux = SCID;
+	if(aux!='\r') buffertx_send_char(aux);
+	if (aux == '\r') {
 		if (i > 0){
 			blocked=1;
 			shell_execute(i);
@@ -28,7 +29,7 @@ void bufferrx_receive(void) {
 		i = 0;
 		return;
 	}
-	push_filtered(SCID);
+	push_filtered(aux);
 	if (i == LEN) {
 		i = 0;
 		buffertx_send_str("\r\nCOMMAND OUT OF BOUND\r\n > ");
@@ -50,6 +51,8 @@ void push_filtered(char c) {
 		bufferrx_buff[i++] = c;
 		return;
 	}
+	if(c==' ')
+		bufferrx_buff[i++] = c;
 	//en este punto ya no son caracteres validos
 	//por lo que no se lo pushea en el buffer
 }
