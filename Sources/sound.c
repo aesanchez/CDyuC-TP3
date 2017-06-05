@@ -17,12 +17,16 @@ void sound_set_nc(unsigned int freq){
 
 void sound_on(void) {
 	//habilitar la interrupcion
+	//TODO: no hace falta hacer doble asignacion, habria que
+	// 	chequear cual es el valor para el TPM1C1SC con el
+	// 	CH1IE seteado en 1
+	TPM1C1SC = 0x14U;
 	TPM1C1SC_CH1IE = 1;
 }
 
 void sound_off(void) {
 	//deshabilitar la interrupcion para que no suene
-	TPM1C1SC_CH1IE = 0;
+	TPM1C1SC = 0x00U;
 }
 
 void sound_interrupt(void) {
@@ -61,7 +65,7 @@ void sound_sweep_interrupt(void) {
 void sound_reset(void) {
 	//by default
 	sound_set_nc(MIN);
-	TPM1C1SC_CH1IE = 0; //deshabilitar interrupcion sonido
+	sound_off();
 	RTCSC_RTIE = 0;//deshabilitar interrupcion sweep
 
 }
