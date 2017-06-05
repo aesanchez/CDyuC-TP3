@@ -2,7 +2,7 @@
 #define LEN 32
 char buffertx_buff[LEN];
 unsigned char w, r;
-char emptu=0;
+char empty=1;
 void buffertx_send_str(char * str) {
 	while(empty==0);
 	while (*str != '\0') {

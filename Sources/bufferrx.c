@@ -25,14 +25,14 @@ void bufferrx_receive(void) {
 			shell_execute(i);
 			blocked=0;
 		}
-		buffertx_send_str("\n > ");
+		buffertx_send_str("\r\n > ");
 		i = 0;
 		return;
 	}
 	push_filtered(aux);
 	if (i == LEN) {
 		i = 0;
-		buffertx_send_str("\r\nCOMMAND OUT OF BOUND\r\n > ");
+		buffertx_send_str("\r\nCOMANDO FUERA DE RANGO\r\n > ");
 	}
 }
 void push_filtered(char c) {
