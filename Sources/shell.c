@@ -12,9 +12,6 @@ void shell_reset(void);
 void shell_error(void);
 void shell_num(unsigned int, char);
 
-// TODO(agus): refactor para usar matriz en la comparacion
-// 	       de comandos
-
 void shell_execute(char dim) {
 	char r;
 	unsigned int num = 0;

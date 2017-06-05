@@ -7,6 +7,14 @@
 unsigned int nc = (unsigned int) (4000000 / MIN);//by default
 unsigned int sweep_freq;
 
+void sound_set_nc(unsigned int freq){
+	//Fclk=8MHz
+	//Ciclo de trabajo 50%
+	//f=frequencia deseada
+	//nc= Fclk/(f*2)
+	nc = (unsigned int) (4000000 / freq);
+}
+
 void sound_on(void) {
 	//habilitar la interrupcion
 	TPM1C1SC_CH1IE = 1;
@@ -15,7 +23,6 @@ void sound_on(void) {
 void sound_off(void) {
 	//deshabilitar la interrupcion para que no suene
 	TPM1C1SC_CH1IE = 0;
-
 }
 
 void sound_interrupt(void) {
@@ -25,11 +32,8 @@ void sound_interrupt(void) {
 
 //devuelve el error de representacion
 char sound_set_frequency(unsigned int freq) {
-	//Fclk=8MHz
-	//Ciclo de trabajo 50%
-	//f=frequencia deseada
-	//nc= Fclk/(f*2)
-	nc = (unsigned int) (4000000 / freq);
+	RTCSC_RTIE = 0;//deshabilitar sweep
+	sound_set_nc(freq);
 	//devolver error
 	//f deseada - f obtenida
 	//fobtenida=Fclk/((nc)*2)
@@ -40,24 +44,24 @@ char sound_set_frequency(unsigned int freq) {
 void sound_sweep(char period) {
 	unsigned int step_period;
 	sweep_freq = MIN;
-	sound_set_frequency(sweep_freq);
+	sound_set_nc(sweep_freq);
 	step_period = (period * 1000) / STEPS;
 	RTCMOD = step_period - 1;
-	RTCSC_RTIE = 1;//habilitar interrupcion	
+	RTCSC_RTIE = 1;//habilitar interrupcion
 }
 
 void sound_sweep_interrupt(void) {
 	sweep_freq += STEP_FREQ;
 	if (sweep_freq > MAX)
 		sweep_freq = MIN;
-	sound_set_frequency(sweep_freq);
+	sound_set_nc(sweep_freq);
 	RTCSC_RTIF = 1;//interrupcion atendida
 }
 
 void sound_reset(void) {
 	//by default
-	sound_set_frequency(MIN);
+	sound_set_nc(MIN);
 	TPM1C1SC_CH1IE = 0; //deshabilitar interrupcion sonido
 	RTCSC_RTIE = 0;//deshabilitar interrupcion sweep
-	
+
 }
