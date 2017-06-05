@@ -3,97 +3,69 @@
 #include "sound.h"
 #include "buffertx.h"
 
-void shell_A(void);
-void shell_B(void);
-void shell_C(void);
+void shell_sweep_5(void);
+void shell_sweep_10(void);
+void shell_sweep_15(void);
 void shell_on(void);
 void shell_off(void);
 void shell_reset(void);
 void shell_error(void);
 void shell_num(unsigned int, char);
 
-void shell_execute(char dim) {
+const char NUMBER_OF_COMMANDS=6;
+const char *COMMANDS[]={"on","off","reset","sweep 5","sweep 10","sweep 15"};
+void (*COMMANDS_FUNC[])(void) = { shell_on, shell_off, shell_reset, shell_sweep_5, shell_sweep_10, shell_sweep_15};
+
+//returns 1 if str=command on buff
+//0 otherwise
+char shell_compare(char * str,char length){
+	char aux = 0;
+	//considerando los strings con '\0' final
+	while(aux < length && str[aux] != '\0' && bufferrx_buff[aux] == str[aux])
+		aux++;
+	if(aux == length && str[aux] == '\0') return 1;
+	return 0;
+}
+
+void shell_execute(char command_length) {
 	char r=0;
 	unsigned int num = 0;
-	if ((bufferrx_buff[0] == 'f') && (bufferrx_buff[1]==' ')) {
+	if (shell_compare("f ",2)) {
 		r = 2;
-		while (r < dim && bufferrx_buff[r] - '0' >= 0 && bufferrx_buff[r] - '0'
+		while (r < command_length && bufferrx_buff[r] - '0' >= 0 && bufferrx_buff[r] - '0'
 				<= 9) {
 			//es un digito
 			num=num*10;
 			num+=bufferrx_buff[r]-'0';
 			r++;
 		}
-	}
-	if (r == dim) {
-		//todos digitos
-		shell_num(num, dim);
-		return;
-	}
+		if (r == command_length) {
+			//todos digitos
+			shell_num(num, command_length);
+			return;
+		}
+	}	
 	//si no corresponde a la instruccion de setear frecuencia sigue
-
-	switch (dim) {
-	case 7:
-		if (bufferrx_buff[0] == 's' && bufferrx_buff[1] == 'w'
-						&& bufferrx_buff[2] == 'e' && bufferrx_buff[3] == 'e'
-						&& bufferrx_buff[4] == 'p' && bufferrx_buff[5] == ' '
-						&& bufferrx_buff[6] == '5' ){
-			shell_A();
+	for(r=0;r<NUMBER_OF_COMMANDS;r++){
+		if(shell_compare(COMMANDS[r],command_length)){
+			(*COMMANDS_FUNC[r])();
 			return;
-		}
-		break;
-	case 8:
-		if (bufferrx_buff[0] == 's' && bufferrx_buff[1] == 'w'
-								&& bufferrx_buff[2] == 'e' && bufferrx_buff[3] == 'e'
-								&& bufferrx_buff[4] == 'p' && bufferrx_buff[5] == ' '
-								&& bufferrx_buff[6] == '1' && bufferrx_buff[7] == '0'){
-			shell_B();
-			return;
-		}
-		else if (bufferrx_buff[0] == 's' && bufferrx_buff[1] == 'w'
-								&& bufferrx_buff[2] == 'e' && bufferrx_buff[3] == 'e'
-								&& bufferrx_buff[4] == 'p' && bufferrx_buff[5] == ' '
-								&& bufferrx_buff[6] == '1' && bufferrx_buff[7] == '5'){
-			shell_C();
-			return;
-		}
-		break;
-	case 2:
-		if (bufferrx_buff[0] == 'o' && bufferrx_buff[1] == 'n') {
-			shell_on();
-			return;
-		}
-		break;
-	case 3:
-		if (bufferrx_buff[0] == 'o' && bufferrx_buff[1] == 'f'
-				&& bufferrx_buff[2] == 'f') {
-			shell_off();
-			return;
-		}
-		break;
-	case 5:
-		if (bufferrx_buff[0] == 'r' && bufferrx_buff[1] == 'e'
-				&& bufferrx_buff[2] == 's' && bufferrx_buff[3] == 'e'
-				&& bufferrx_buff[4] == 't') {
-			shell_reset();
-			return;
-		}
-		break;
+		}	
 	}
 	shell_error();
 }
 
-void shell_A(void) {
+void shell_sweep_5(void) {
 	buffertx_send_str("\r\nBarriendo con T1 = 5s");
 	sound_sweep(5);
 }
 
-void shell_B(void) {
+void shell_sweep_10(void) {
 	buffertx_send_str("\r\nBarriendo con T2 = 10s");
 	sound_sweep(10);
 }
 
-void shell_C(void) {
+void shell_sweep_15(void) {
 	buffertx_send_str("\r\nBarriendo con T3 = 15s");
 	sound_sweep(15);
 }
@@ -132,7 +104,7 @@ void shell_error(void) {
 	buffertx_send_str("\r\nComando no reconocido");
 }
 
-void shell_num(unsigned int num, char dim) {
+void shell_num(unsigned int num, char command_length) {
 	char error, j, i;
 	char aux[3];
 	if ((num < MIN) || (num > MAX)) {
@@ -141,7 +113,7 @@ void shell_num(unsigned int num, char dim) {
 	}
 	buffertx_send_str("\r\nSeteando frecuencia ");
 	//imprimo frecuencia ingresada
-	for (j = 2; j < dim; j++)
+	for (j = 2; j < command_length; j++)
 		buffertx_send_char(bufferrx_buff[j]);
 	error = sound_set_frequency(num);
 	//imprimo el error
