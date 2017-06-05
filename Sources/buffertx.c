@@ -3,6 +3,7 @@
 char buffertx_buff[LEN];
 unsigned char w, r;
 void buffertx_send_str(char * str) {
+	while(SCIC2_TIE==1);
 	while (*str != '\0') {
 		buffertx_buff[(w++)%LEN]=*str;
 		str++;

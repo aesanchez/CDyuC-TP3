@@ -9,7 +9,7 @@
 **     Processor : MC9S08SH8CPJ
 **     Version   : Component 01.008, Driver 01.08, CPU db: 3.00.066
 **     Datasheet : MC9S08SH8 Rev. 3 6/2008
-**     Date/Time : 2017-06-03, 12:47, # CodeGen: 9
+**     Date/Time : 2017-06-05, 04:58, # CodeGen: 2
 **     Abstract  :
 **         This module contains device initialization code 
 **         for selected on-chip peripherals.
@@ -108,6 +108,11 @@ void MCU_init(void)
   PTBDS = 0x00U;                                      
   /* PTCDS: PTCDS3=0,PTCDS2=0,PTCDS1=0,PTCDS0=0 */
   PTCDS = 0x00U;                                      
+  /* ### Init_RTC init code */
+  /* RTCMOD: RTCMOD=0 */
+  RTCMOD = 0x00U;                      /* Set modulo register */
+  /* RTCSC: RTIF=1,RTCLKS=0,RTIE=0,RTCPS=8 */
+  RTCSC = 0x88U;                       /* Configure RTC */
   /* ### Init_SCI init code */
   /* SCIC2: TIE=0,TCIE=0,RIE=0,ILIE=0,TE=0,RE=0,RWU=0,SBK=0 */
   SCIC2 = 0x00U;                       /* Disable the SCI module */
@@ -136,11 +141,6 @@ void MCU_init(void)
   (void)(TPM1SC == 0U);                /* Overflow int. flag clearing (first part) */
   /* TPM1SC: TOF=0,TOIE=0,CPWMS=0,CLKSB=0,CLKSA=1,PS2=0,PS1=0,PS0=0 */
   TPM1SC = 0x08U;                      /* Int. flag clearing (2nd part) and timer control register setting */
-  /* ### Init_RTC init code */
-  /* RTCMOD: RTCMOD=0 */
-  RTCMOD = 0x00U;                      /* Set modulo register */
-  /* RTCSC: RTIF=1,RTCLKS=0,RTIE=0,RTCPS=8 */
-  RTCSC = 0x88U;                       /* Configure RTC */
   /* ### */
   /*lint -save  -e950 Disable MISRA rule (1.1) checking. */
   asm CLI;                             /* Enable interrupts */
