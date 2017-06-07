@@ -1,4 +1,5 @@
 #include "derivative.h"
+#include "buffertx.h"
 #define LEN 32
 char buffertx_buff[LEN];
 unsigned char w, r;

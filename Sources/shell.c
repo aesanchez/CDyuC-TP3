@@ -4,7 +4,7 @@
 #include "buffertx.h"
 
 #define LEN 16
-extern char buff[LEN];
+char buff[LEN];
 char ibuff=0;
 
 void push_upper_to_lower_case(char);
@@ -16,6 +16,7 @@ void shell_on(void);
 void shell_off(void);
 void shell_error(void);
 void shell_num(unsigned int, char);
+void shell_show_commands(void);
 
 const char NUMBER_OF_COMMANDS=6;
 const char *COMMANDS[]={"on","off","reset","sweep 5","sweep 10","sweep 15"};
@@ -24,10 +25,10 @@ void (*COMMANDS_FUNC[])(void) = { shell_on, shell_off, shell_reset, shell_sweep_
 
 //returns 1 if str=command on buff
 //0 otherwise
-char shell_compare(char * str,char length){
+char shell_compare(const char * str,char length){
 	char aux = 0;
 	//considerando los strings con '\0' final
-	while(aux < length && str[aux] != '\0' && bufferrx_buff[aux] == str[aux])
+	while(aux < length && str[aux] != '\0' && buff[aux] == str[aux])
 		aux++;
 	if(aux == length && str[aux] == '\0') return 1;
 	return 0;
@@ -38,12 +39,12 @@ void shell_execute(char command_length) {
 	unsigned int num = 0;
 	if (shell_compare("f ",2)) {
 		r = 2;
-		while (r < command_length && bufferrx_buff[r] - '0' >= 0 && bufferrx_buff[r] - '0'
+		while (r < command_length && buff[r] - '0' >= 0 && buff[r] - '0'
 				<= 9) {
 			//es un digito
 			num=num*10;
-			num+=bufferrx_buff[iaux]-'0';
-			iaux++;
+			num+=buff[r]-'0';
+			r++;
 		}
 		if (r == command_length) {
 			//todos digitos
@@ -66,8 +67,9 @@ void shell_execute(char command_length) {
 
 
 void shell_update(){
+	char car;
 	if(FLAG_RECEIVED==0) return;
-	char car=bufferrx_get_char();
+	car=bufferrx_get_char();
 	FLAG_RECEIVED=0;
 	if(car!='\r') buffertx_send_char(car);
 	if (car == '\r') {
@@ -150,7 +152,7 @@ void shell_num(unsigned int num, char command_length) {
 	buffertx_send_str("\r\nSeteando frecuencia ");
 	//imprimo frecuencia ingresada
 	for (j = 2; j < command_length; j++)
-		buffertx_send_char(bufferrx_buff[j]);
+		buffertx_send_char(buff[j]);
 	error = sound_set_frequency(num);
 	//imprimo el error
 	buffertx_send_str("\r\nCon error de ");
