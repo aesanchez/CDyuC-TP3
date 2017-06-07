@@ -12,7 +12,7 @@ extern volatile char FLAG_RECIEVED;
 
 void main(void) {
 	MCU_init();
-	TPM1C1SC = 0x00U;
+
 	shell_show_commands();
 	
 	for (;;) {
