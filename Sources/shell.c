@@ -15,7 +15,7 @@ void shell_sweep_15(void);
 void shell_on(void);
 void shell_off(void);
 void shell_error(void);
-void shell_num(unsigned int, char);
+void shell_num(unsigned int);
 void shell_show_commands(void);
 
 const char NUMBER_OF_COMMANDS=6;
@@ -25,7 +25,7 @@ void (*COMMANDS_FUNC[])(void) = { shell_on, shell_off, shell_reset, shell_sweep_
 
 //returns 1 if str=command on buff
 //0 otherwise
-char shell_compare(const char * str,char length){
+char shell_compare(char * str,char length){
 	char aux = 0;
 	//considerando los strings con '\0' final
 	while(aux < length && str[aux] != '\0' && buff[aux] == str[aux])
@@ -34,21 +34,21 @@ char shell_compare(const char * str,char length){
 	return 0;
 }
 
-void shell_execute(char command_length) {
+void shell_execute(void) {
 	char r=0;
 	unsigned int num = 0;
 	if (shell_compare("f ",2)) {
 		r = 2;
-		while (r < command_length && buff[r] - '0' >= 0 && buff[r] - '0'
+		while (r < ibuff && buff[r] - '0' >= 0 && buff[r] - '0'
 				<= 9) {
 			//es un digito
 			num=num*10;
 			num+=buff[r]-'0';
 			r++;
 		}
-		if (r == command_length) {
+		if (r == ibuff) {
 			//todos digitos
-			shell_num(num, command_length);
+			shell_num(num);
 			return;
 		}
 		shell_error();
@@ -56,8 +56,8 @@ void shell_execute(char command_length) {
 	}	
 	//si no corresponde a la instruccion de setear frecuencia sigue
 	for(r=0;r<NUMBER_OF_COMMANDS;r++){
-		if(COMMANDS_LEN[r]!=command_length) continue;
-		if(shell_compare(COMMANDS[r],command_length)){
+		if(COMMANDS_LEN[r]!=ibuff) continue;
+		if(shell_compare(COMMANDS[r],ibuff)){
 			(*COMMANDS_FUNC[r])();
 			return;
 		}	
@@ -66,7 +66,7 @@ void shell_execute(char command_length) {
 }
 
 
-void shell_update(){
+void shell_update(void){
 	char car;
 	if(FLAG_RECEIVED==0) return;
 	car=bufferrx_get_char();
@@ -74,7 +74,7 @@ void shell_update(){
 	if(car!='\r') buffertx_send_char(car);
 	if (car == '\r') {
 		if (ibuff > 0){
-			shell_execute(ibuff);
+			shell_execute();
 		}
 		ibuff = 0;
 		return;
@@ -142,7 +142,7 @@ void shell_error(void) {
 	buffertx_send_str("\r\n > ");
 }
 
-void shell_num(unsigned int num, char command_length) {
+void shell_num(unsigned int num) {
 	char error, j, i;
 	char aux[3];
 	if ((num < MIN) || (num > MAX)) {
@@ -151,7 +151,7 @@ void shell_num(unsigned int num, char command_length) {
 	}
 	buffertx_send_str("\r\nSeteando frecuencia ");
 	//imprimo frecuencia ingresada
-	for (j = 2; j < command_length; j++)
+	for (j = 2; j < ibuff; j++)
 		buffertx_send_char(buff[j]);
 	error = sound_set_frequency(num);
 	//imprimo el error
@@ -168,7 +168,6 @@ void shell_num(unsigned int num, char command_length) {
 			aux[j++] = error % 10;
 			error /= 10;
 		}
-
 		for (i = j; i >0 ; i--)
 			buffertx_send_char(aux[i-1]+'0');
 	}
