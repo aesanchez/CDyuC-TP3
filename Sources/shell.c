@@ -8,7 +8,6 @@ void shell_sweep_10(void);
 void shell_sweep_15(void);
 void shell_on(void);
 void shell_off(void);
-void shell_reset(void);
 void shell_error(void);
 void shell_num(unsigned int, char);
 
@@ -46,6 +45,7 @@ void shell_execute(char command_length) {
 			return;
 		}
 		shell_error();
+		return;
 	}	
 	//si no corresponde a la instruccion de setear frecuencia sigue
 	for(r=0;r<NUMBER_OF_COMMANDS;r++){
@@ -58,40 +58,46 @@ void shell_execute(char command_length) {
 	shell_error();
 }
 
+void shell_update(){
+	if(FLAG_RECEIVED) bufferrx_receive_handler();
+}
 void shell_sweep_5(void) {
 	buffertx_send_str("\r\nBarriendo con T1 = 5s");
+	buffertx_send_str("\r\n > ");
 	sound_sweep(5);
 }
 
 void shell_sweep_10(void) {
 	buffertx_send_str("\r\nBarriendo con T2 = 10s");
+	buffertx_send_str("\r\n > ");
 	sound_sweep(10);
 }
 
 void shell_sweep_15(void) {
 	buffertx_send_str("\r\nBarriendo con T3 = 15s");
+	buffertx_send_str("\r\n > ");
 	sound_sweep(15);
 }
 
 void shell_on(void) {
 	buffertx_send_str("\r\nPrendiendo sonido...");
+	buffertx_send_str("\r\n > ");
 	sound_on();
 }
 
 void shell_off(void) {
 	buffertx_send_str("\r\nApagando sonido...");
+	buffertx_send_str("\r\n > ");
 	sound_off();
 }
 
 void shell_reset(void) {
-	//buffertx_send_str("\r\nReseteando...");
 	shell_show_commands();
 	sound_reset();
 }
 
 void shell_show_commands(void){
-	buffertx_send_str("\r\nLista de comandos:");
-	
+	buffertx_send_str("\r\nLista de comandos:");	
 	buffertx_send_str("\r\n------------------");
 	buffertx_send_str("\r\nON       >> prender el sonido");
 	buffertx_send_str("\r\nOFF      >> apagar el sonido");
@@ -106,6 +112,7 @@ void shell_show_commands(void){
 
 void shell_error(void) {
 	buffertx_send_str("\r\nComando no reconocido");
+	buffertx_send_str("\r\n > ");
 }
 
 void shell_num(unsigned int num, char command_length) {
@@ -139,5 +146,6 @@ void shell_num(unsigned int num, char command_length) {
 			buffertx_send_char(aux[i-1]+'0');
 	}
 	buffertx_send_str("Hz");
+	buffertx_send_str("\r\n > ");
 }
 

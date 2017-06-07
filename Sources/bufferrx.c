@@ -4,22 +4,20 @@
 #include "shell.h"
 #include "bufferrx.h"
 
-volatile char FLAG_RECIEVED=0;
+volatile char FLAG_RECEIVED=0;
 
 char bufferrx_buff[LEN];
 //el buffer se comparte con shell para poder leer los comandos
 char i = 0;
 // para asegurarnos que no se lean caracteres cuando estamos procesando
 // un comando
-char blocked=0;
-
 char car;
 
 void push_upper_to_lower_case(char);
 
 void bufferrx_receive_interrupt(){
 	car=SCID;
-	FLAG_RECIEVED=1;
+	FLAG_RECEIVED=1;
 }
 
 void bufferrx_receive_handler(void) {
@@ -28,17 +26,17 @@ void bufferrx_receive_handler(void) {
 		if (i > 0){
 			shell_execute(i);
 		}
-		buffertx_send_str("\r\n > ");
 		i = 0;
-		FLAG_RECIEVED=0;
+		FLAG_RECEIVED=0;
 		return;
 	}
 	push_upper_to_lower_case(car);
 	if (i == LEN) {
 		i = 0;
-		buffertx_send_str("\r\nCOMANDO FUERA DE RANGO\r\n > ");
+		buffertx_send_str("\r\nCOMANDO FUERA DE RANGO");
+		buffertx_send_str("\r\n > ");
 	}
-	FLAG_RECIEVED=0;
+	FLAG_RECEIVED=0;
 }
 void push_upper_to_lower_case(char c) {
 	if (c >= 'A' && c <= 'Z') {
