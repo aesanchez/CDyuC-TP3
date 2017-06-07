@@ -4,6 +4,5 @@
 void buffertx_send_str(char *);
 void buffertx_send_char(char);
 void buffertx_transmit(void);
-char buffertx_ready(void);
 
 #endif
