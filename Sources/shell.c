@@ -3,6 +3,12 @@
 #include "sound.h"
 #include "buffertx.h"
 
+#define LEN 16
+extern char buff[LEN];
+char ibuff=0;
+
+void push_upper_to_lower_case(char);
+
 void shell_sweep_5(void);
 void shell_sweep_10(void);
 void shell_sweep_15(void);
@@ -58,9 +64,28 @@ void shell_execute(char command_length) {
 	shell_error();
 }
 
+
 void shell_update(){
-	if(FLAG_RECEIVED) bufferrx_receive_handler();
+	if(FLAG_RECEIVED==0) return;
+	char car=bufferrx_get_char();
+	FLAG_RECEIVED=0;
+	if(car!='\r') buffertx_send_char(car);
+	if (car == '\r') {
+		if (ibuff > 0){
+			shell_execute(ibuff);
+		}
+		ibuff = 0;
+		return;
+	}
+	push_upper_to_lower_case(car);
+	if (ibuff == LEN) {
+		ibuff = 0;
+		buffertx_send_str("\r\nCOMANDO FUERA DE RANGO");
+		buffertx_send_str("\r\n > ");
+	}
 }
+
+
 void shell_sweep_5(void) {
 	buffertx_send_str("\r\nBarriendo con T1 = 5s");
 	buffertx_send_str("\r\n > ");
@@ -147,5 +172,13 @@ void shell_num(unsigned int num, char command_length) {
 	}
 	buffertx_send_str("Hz");
 	buffertx_send_str("\r\n > ");
+}
+
+void push_upper_to_lower_case(char c) {
+	if (c >= 'A' && c <= 'Z') {
+		//upper caso to lower case
+		c = c + ('a' - 'A');		
+	}
+	buff[ibuff++] = c;
 }
 
