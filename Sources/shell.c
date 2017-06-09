@@ -147,6 +147,7 @@ void shell_num(unsigned int num) {
 	char aux[3];
 	if ((num < MIN) || (num > MAX)) {
 		buffertx_send_str("\r\nSolo entre 200-10000 Hz");
+		buffertx_send_str("\r\n > ");
 		return;
 	}
 	buffertx_send_str("\r\nSeteando frecuencia ");
