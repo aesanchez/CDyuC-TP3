@@ -3,6 +3,7 @@
 
 #define MIN 200
 #define MAX 10000
+#define STEP_FREQ 100
 
 void sound_interrupt(void);
 void sound_sweep_interrupt(void);

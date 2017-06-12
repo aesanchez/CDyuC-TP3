@@ -1,7 +1,6 @@
 #include "sound.h"
 #include "derivative.h"
 
-#define STEP_FREQ 100 //solo se usa para los barridos
 #define STEPS ((MAX-MIN)/STEP_FREQ) //cantidad de pasos para el barrido
 
 unsigned int nc = (unsigned int) (4000000 / MIN);//by default

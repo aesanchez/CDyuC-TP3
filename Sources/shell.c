@@ -134,6 +134,7 @@ void shell_show_commands(void){
 	buffertx_send_str("\r\nSWEEP 15 >> barrido de 15seg");
 	buffertx_send_str("\r\nF FREQ   >>");
 	buffertx_send_str(" frecuencia fija entre 200-10000");
+	buffertx_send_str(" con pasos de 100 Hz");
 	buffertx_send_str("\r\n > ");
 }
 
@@ -150,6 +151,11 @@ void shell_num(unsigned int num) {
 		buffertx_send_str("\r\n > ");
 		return;
 	}
+	if (num % STEP_FREQ != 0 )[
+		buffertx_send_str("\r\nSolo en pasos de 100 Hz");
+		bufferrx_send_str("\r\n > ");
+		return;
+	]
 	buffertx_send_str("\r\nSeteando frecuencia ");
 	//imprimo frecuencia ingresada
 	for (j = 2; j < ibuff; j++)
