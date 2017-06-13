@@ -5,7 +5,7 @@
 
 #define LEN 16
 char buff[LEN];
-char ibuff=0;
+char ibuff = 0;
 
 void push_upper_to_lower_case(char);
 
@@ -18,29 +18,31 @@ void shell_error(void);
 void shell_num(unsigned int);
 void shell_show_commands(void);
 
-const char NUMBER_OF_COMMANDS=6;
-const char *COMMANDS[]={"on","off","reset","sweep 5","sweep 10","sweep 15"};
-const char COMMANDS_LEN[]={2,3,5,7,8,8};
-void (*COMMANDS_FUNC[])(void) = { shell_on, shell_off, shell_reset, shell_sweep_5, shell_sweep_10, shell_sweep_15};
+const char NUMBER_OF_COMMANDS = 6;
+const char *COMMANDS[] = { "on", "off", "reset", "sweep 5", "sweep 10",
+		"sweep 15" };
+const char COMMANDS_LEN[] = { 2, 3, 5, 7, 8, 8 };
+void (*COMMANDS_FUNC[])(void) = { shell_on, shell_off, shell_reset,
+		shell_sweep_5, shell_sweep_10, shell_sweep_15 };
 
 //returns 1 if str=command on buff
 //0 otherwise
-char shell_compare(char * str,char length){
+char shell_compare(char * str, char length) {
 	char aux = 0;
 	//considerando los strings con '\0' final
-	while(aux < length && str[aux] != '\0' && buff[aux] == str[aux])
+	while (aux < length && str[aux] != '\0' && buff[aux] == str[aux])
 		aux++;
-	if(aux == length && str[aux] == '\0') return 1;
+	if (aux == length && str[aux] == '\0')
+		return 1;
 	return 0;
 }
 
 void shell_execute(void) {
-	char r=0;
+	char r = 0;
 	unsigned int num = 0;
-	if (shell_compare("f ",2)) {
+	if (shell_compare("f ", 2)) {
 		r = 2;
-		while (r < ibuff && buff[r] - '0' >= 0 && buff[r] - '0'
-				<= 9) {
+		while (r < ibuff && buff[r] - '0' >= 0 && buff[r] - '0' <= 9) {
 			//es un digito
 			num=num*10;
 			num+=buff[r]-'0';
@@ -53,27 +55,28 @@ void shell_execute(void) {
 		}
 		shell_error();
 		return;
-	}	
+	}
 	//si no corresponde a la instruccion de setear frecuencia sigue
-	for(r=0;r<NUMBER_OF_COMMANDS;r++){
+	for (r = 0; r < NUMBER_OF_COMMANDS; r++) {
 		if(COMMANDS_LEN[r]!=ibuff) continue;
-		if(shell_compare(COMMANDS[r],ibuff)){
+		if(shell_compare(COMMANDS[r],ibuff)) {
 			(*COMMANDS_FUNC[r])();
 			return;
-		}	
+		}
 	}
 	shell_error();
 }
 
-
-void shell_update(void){
+void shell_update(void) {
 	char car;
-	if(FLAG_RECEIVED==0) return;
-	car=bufferrx_get_char();
-	FLAG_RECEIVED=0;
-	if(car!='\r') buffertx_send_char(car);
+	if (FLAG_RECEIVED == 0)
+		return;
+	car = bufferrx_get_char();
+	FLAG_RECEIVED = 0;
+	if (car != '\r')
+		buffertx_send_char(car);
 	if (car == '\r') {
-		if (ibuff > 0){
+		if (ibuff > 0) {
 			shell_execute();
 		}
 		ibuff = 0;
@@ -86,7 +89,6 @@ void shell_update(void){
 		buffertx_send_str("\r\n > ");
 	}
 }
-
 
 void shell_sweep_5(void) {
 	buffertx_send_str("\r\nBarriendo con T1 = 5s");
@@ -123,8 +125,8 @@ void shell_reset(void) {
 	sound_reset();
 }
 
-void shell_show_commands(void){
-	buffertx_send_str("\r\nLista de comandos:");	
+void shell_show_commands(void) {
+	buffertx_send_str("\r\nLista de comandos:");
 	buffertx_send_str("\r\n------------------");
 	buffertx_send_str("\r\nON       >> prender el sonido");
 	buffertx_send_str("\r\nOFF      >> apagar el sonido");
@@ -151,11 +153,12 @@ void shell_num(unsigned int num) {
 		buffertx_send_str("\r\n > ");
 		return;
 	}
-	if (num % STEP_FREQ != 0 )[
+	if (num % STEP_FREQ != 0) {
 		buffertx_send_str("\r\nSolo en pasos de 100 Hz");
-		bufferrx_send_str("\r\n > ");
+		buffertx_send_str("\r\n > ");
 		return;
-	]
+	}
+
 	buffertx_send_str("\r\nSeteando frecuencia ");
 	//imprimo frecuencia ingresada
 	for (j = 2; j < ibuff; j++)
@@ -168,15 +171,16 @@ void shell_num(unsigned int num) {
 		buffertx_send_char('-');
 		error *= -1;
 	}
-	if(error == 0) buffertx_send_char('0');
+	if (error == 0)
+		buffertx_send_char('0');
 	else {
-		j=0;
-		while(error != 0){
+		j = 0;
+		while (error != 0) {
 			aux[j++] = error % 10;
 			error /= 10;
 		}
-		for (i = j; i >0 ; i--)
-			buffertx_send_char(aux[i-1]+'0');
+		for (i = j; i > 0; i--)
+			buffertx_send_char(aux[i - 1] + '0');
 	}
 	buffertx_send_str("Hz");
 	buffertx_send_str("\r\n > ");
@@ -185,7 +189,7 @@ void shell_num(unsigned int num) {
 void push_upper_to_lower_case(char c) {
 	if (c >= 'A' && c <= 'Z') {
 		//upper caso to lower case
-		c = c + ('a' - 'A');		
+		c = c + ('a' - 'A');
 	}
 	buff[ibuff++] = c;
 }
