@@ -7,6 +7,6 @@ Implementar un generador de sonidos programable. El mismo debera cumplir los sig
 * Reproduccion de sonido conuna frecuencia fija o con en modo barrido.\
 * La comunicacion debe estar implementada mediante buffers de Transmision y Recepcion
 ## Microcontrolador
-Para la resolucion, la catedra nos proporciona un microcontrolador de la familia HC9S08 (SH8), en particular el CPJ junto con un modulo EBDM. Un buzzer y un cable serial.
+Para la resolucion, la catedra nos proporciona un microcontrolador de la familia HC9S08 (SH8), en particular el CPJ junto con un modulo EBDM. Un buzzer y un cable serial RS-232.
 ## Software
 CodeWarriors v10.1
