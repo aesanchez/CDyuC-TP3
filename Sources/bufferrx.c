@@ -1,7 +1,9 @@
 #include "bufferrx.h"
 #include "derivative.h"
 
+// FLAG_RECEIVED indica que se leyo un caracter
 volatile char FLAG_RECEIVED=0;
+
 char car;
 
 // bufferrx_receive_interrupt es llamado desde la interrupcion
