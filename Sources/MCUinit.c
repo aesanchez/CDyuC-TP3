@@ -181,6 +181,7 @@ __interrupt void isrVrtc(void)
 __interrupt void isrVscitx(void)
 {
   /* Write your interrupt code here ... */
+	// si hay un caracter para transmitir se llama al buffer de transmision
 	if(SCIS1_TDRE == 1)
 		buffertx_transmit();
 }
@@ -200,6 +201,7 @@ __interrupt void isrVscitx(void)
 __interrupt void isrVscirx(void)
 {
   /* Write your interrupt code here ... */
+	// si hay un caracter disponible se llama al buffer de recepcion para que lo almacene
 	if(SCIS1_RDRF == 1)
 		bufferrx_receive_interrupt();
 }
